@@ -1,5 +1,5 @@
 # Changelog
 
-## Version 1.0 (November 19, 2015)
+## Version 1.0 (November 21 2016)
 
-Initial release.
+Initial release. Static filter to filter in charity >= developer >= humble tip
