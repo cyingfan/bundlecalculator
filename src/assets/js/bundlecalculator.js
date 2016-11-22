@@ -72,9 +72,13 @@ BundleCalculator.filter = function(combo) {
     return (combo[1] >= combo[0] && combo[1] >= combo[2] && combo[0] >= combo[2]);
 };
 
+BundleCalculator.ratioToDollar = function(ratio, total) {
+    return Math.round(100 * parseFloat(this.targetAmountElement.val()) * ratio / total) / 100;
+};
+
 BundleCalculator.renderResults = function(combos) {
-    var resultsDiv = $('div.results');
-    resultsDiv.find('div.result-entry').remove();
+    var resultsDiv = $('tbody.results');
+    resultsDiv.empty();
     for (var key in combos) {
         var combo = combos[key];
 
@@ -82,31 +86,60 @@ BundleCalculator.renderResults = function(combos) {
 
         var total = combo[0] + combo[1] + combo[2];
         resultsDiv.append(" \
-            <div class='row result-entry'>\
-                <div class='medium-4 columns'>\
-                    $" + (parseFloat(this.targetAmountElement.val()) * combo[0] / total) + " (" + combo[0] + ") \
+            <tr>\
+                <td>\
+                    $" + this.ratioToDollar(combo[0], total) + " (" + combo[0] + ") \
+                </td>\
+                 <td>\
+                    $" + this.ratioToDollar(combo[1], total) + " (" + combo[1] + ") \
+                </td>\
+                 <td>\
+                    $" + this.ratioToDollar(combo[2], total) + " (" + combo[2] + ") \
                 </div>\
-                <div class='medium-4 columns'>\
-                    $" + (parseFloat(this.targetAmountElement.val()) * combo[1] / total) + " (" + combo[1] + ") \
-                </div>\
-                <div class='medium-4 columns'>\
-                    $" + (parseFloat(this.targetAmountElement.val()) * combo[2] / total) + " (" + combo[2] + ") \
-                </div>\
-            </div>\
+            </tr>\
         ");
     }
 };
 
+BundleCalculator.getGoldenRatio = function() {
+    var target = this.targetAmountElement.val();
+    var phi = 1.6180339887498948482;
+
+    var cp = target / phi;
+    var balance = target - cp;
+    var dp = balance / phi;
+    var hp = balance - dp;
+
+    var result = {};
+    var comboKey = dp + "," + cp + "," + hp;
+    result[comboKey] = [dp, cp, hp];
+    return result;
+};
+
 BundleCalculator.bindChanges = function () {
-    this.targetAmountElement.change(function () {
+    this.targetAmountElement.on('keyup change', function () {
         console.log("target changed");
         this.renderResults(this.getAllCombos());
     }.bind(this));
 
-    this.unitPrecisionElement.change(function () {
+    this.unitPrecisionElement.on('keyup change', function () {
         console.log("unit changed");
         this.renderResults(this.getAllCombos());
     }.bind(this));
+
+    $('button.quick-result').click(function(e) {
+        var clicked_button = e.currentTarget.value;
+
+        e.preventDefault();
+
+        var combos;
+        if (clicked_button == "golden_ratio") {
+            combos = this.getGoldenRatio();
+        }
+        if (combos) {
+            this.renderResults(combos);
+        }
+    }.bind(this))
 };
 
 BundleCalculator.init = function() {
