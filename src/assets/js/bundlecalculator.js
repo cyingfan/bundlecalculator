@@ -28,41 +28,62 @@ BundleCalculator.gcd = function() {
     return res;
 };
 
+BundleCalculator.sortKeys = function(combos) {
+    var comboKeys = Object.keys(combos);
+    comboKeys.sort(function(a, b){
+        var aParts = a.split(",");
+        var bParts = b.split(",");
+
+        var diff0 = parseInt(bParts[0]) - parseInt(aParts[0]);
+        if (diff0 != 0) {
+            return diff0;
+        }
+        var diff1 = parseInt(bParts[1]) - parseInt(aParts[1]);
+        if (diff1 != 0) {
+            return diff1;
+        }
+
+        return parseInt(bParts[2]) - parseInt(aParts[2]);
+    });
+    return comboKeys;
+};
 
 BundleCalculator.getAllCombos = function() {
-    var developerPortion = 1;
-    var charityPortion = 1;
-    var humblePortion = 1;
+    var portion_1 = 1;
+    var portion_2 = 1;
+    var portion_3 = 1;
 
     var combos = {};
     var comboKey = "";
+    var entry;
     var gcd = 1;
-    var dp = 1;
-    var cp = 1;
-    var hp = 1;
+    var p1 = 1;
+    var p2 = 1;
+    var p3 = 1;
 
-    for (; developerPortion + charityPortion + humblePortion <= this.getUnitCount(); developerPortion++) {
-        for (; developerPortion + charityPortion + humblePortion <= this.getUnitCount(); charityPortion++ ) {
-            for (; developerPortion + charityPortion + humblePortion <= this.getUnitCount(); humblePortion++ ) {
+    for (; portion_1 + portion_2 + portion_3 <= this.getUnitCount(); portion_1++) {
+        for (; portion_1 + portion_2 + portion_3 <= this.getUnitCount(); portion_2++ ) {
+            for (; portion_1 + portion_2 + portion_3 <= this.getUnitCount(); portion_3++ ) {
 
-                if (developerPortion + charityPortion + humblePortion != this.getUnitCount()) continue;
+                if (portion_1 + portion_2 + portion_3 != this.getUnitCount()) continue;
 
-                dp = developerPortion;
-                cp = charityPortion;
-                hp = humblePortion;
-                gcd = this.gcd(developerPortion, charityPortion, humblePortion);
+                p1 = portion_1;
+                p2 = portion_2;
+                p3 = portion_3;
+                gcd = this.gcd(portion_1, portion_2, portion_3);
                 if (gcd > 1) {
-                    dp /= gcd;
-                    cp /= gcd;
-                    hp /= gcd;
+                    p1 /= gcd;
+                    p2 /= gcd;
+                    p3 /= gcd;
                 }
 
-                comboKey = dp + "," + cp + "," + hp;
-                combos[comboKey] = [dp, cp, hp];
+                entry = [p1, p2, p3].sort();
+                comboKey = entry[0] + "," + entry[1] + "," + entry[2];
+                combos[comboKey] = entry;
             }
-            humblePortion = 1;
+            portion_3 = 1;
         }
-        charityPortion = 1;
+        portion_2 = 1;
     }
 
     return combos;
@@ -79,10 +100,15 @@ BundleCalculator.ratioToDollar = function(ratio, total) {
 BundleCalculator.renderResults = function(combos) {
     var resultsDiv = $('tbody.results');
     resultsDiv.empty();
-    for (var key in combos) {
+    var sortKeys = this.sortKeys(combos);
+    for (var i in sortKeys) {
+        var key = sortKeys[i];
         var combo = combos[key];
 
-        if (!this.filter(combo)) continue;
+        /*
+            Pending for querybuilder.js.org
+         */
+        // if (!this.filter(combo)) continue;
 
         var total = combo[0] + combo[1] + combo[2];
         resultsDiv.append(" \
@@ -105,14 +131,14 @@ BundleCalculator.getGoldenRatio = function() {
     var target = this.targetAmountElement.val();
     var phi = 1.6180339887498948482;
 
-    var cp = target / phi;
-    var balance = target - cp;
-    var dp = balance / phi;
-    var hp = balance - dp;
+    var p1 = target / phi;
+    var balance = target - p1;
+    var p2 = balance / phi;
+    var p3 = balance - p2;
 
     var result = {};
-    var comboKey = dp + "," + cp + "," + hp;
-    result[comboKey] = [dp, cp, hp];
+    var comboKey = p1 + "," + p2 + "," + p3;
+    result[comboKey] = [p1, p2, p3];
     return result;
 };
 
