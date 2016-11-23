@@ -111,16 +111,19 @@ BundleCalculator.renderResults = function(combos) {
         // if (!this.filter(combo)) continue;
 
         var total = combo[0] + combo[1] + combo[2];
+	var price1 = this.ratioToDollar(combo[0], total);
+	var price2 = this.ratioToDollar(combo[1], total);
+	var price3 = Math.round(100 * (parseFloat(this.targetAmountElement.val()) - price1 - price2)) / 100;
         resultsDiv.append(" \
             <tr>\
                 <td>\
-                    $" + this.ratioToDollar(combo[0], total) + " (" + combo[0] + ") \
+                    $" + price1 + " (" + combo[0] + ") \
                 </td>\
                  <td>\
-                    $" + this.ratioToDollar(combo[1], total) + " (" + combo[1] + ") \
+                    $" + price2 + " (" + combo[1] + ") \
                 </td>\
                  <td>\
-                    $" + this.ratioToDollar(combo[2], total) + " (" + combo[2] + ") \
+                    $" + price3 + " (" + combo[2] + ") \
                 </div>\
             </tr>\
         ");
