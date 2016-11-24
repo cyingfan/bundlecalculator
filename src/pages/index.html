@@ -5,7 +5,7 @@
 </div>
 
 <div class="row">
-  <div class="medium-6 columns">
+  <div class="medium-4 columns combo-input-columns">
     <label>Target Amount $
       <input id="target-amount" type="text" placeholder="20" aria-describedby="exampleHelpText" required pattern="number" value="25">
       <span class="form-error">
@@ -13,7 +13,7 @@
         </span>
     </label>
   </div>
-  <div class="medium-6 columns">
+  <div class="medium-4 columns combo-input-columns">
     <label>Precision $
       <input id="unit-precision" type="text" placeholder="0.5" aria-describedby="exampleHelpText" required pattern="number" value="0.5">
       <span class="form-error">
@@ -21,16 +21,22 @@
         </span>
     </label>
   </div>
+  <div class="medium-4 columns combo-input-columns">
+    <button type="button" id="generate-combos" class="button">Generate Combinations</button>
+  </div>
 </div>
 
 <div class="row">
   <div class="medium-2 columns">
     Quick Result Buttons
   </div>
-
-  <div class="medium-10 columns">
-    <button type="button" class="quick-result button" value="golden_ratio">Golden Ratio</button>
+  <div class="medium-2 columns">
+    <button type="button" class="quick-result button" value="golden_ratio">Golden Ratio V1</button>
   </div>
+  <div class="medium-2 columns">
+    <button type="button" class="quick-result button" value="golden_ratio_v2">Golden Ratio V2</button>
+  </div>
+  <div class="medium-4 columns">&nbsp;</div>
 </div>
 
 <div class="row">

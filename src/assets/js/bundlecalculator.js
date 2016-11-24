@@ -1,11 +1,15 @@
 var BundleCalculator = BundleCalculator || {};
 
 BundleCalculator.targetAmountElement = null;
+BundleCalculator.targetAmountVal = 0;
 BundleCalculator.unitPrecisionElement = null;
+BundleCalculator.unitPrecisionVal = 0;
+BundleCalculator.phi = 1.6180339887498948482;
+
 
 
 BundleCalculator.getUnitCount = function() {
-    return parseInt(parseFloat(this.targetAmountElement.val()) / parseFloat(this.unitPrecisionElement.val()));
+    return parseInt(this.targetAmountVal / this.unitPrecisionVal);
 };
 
 BundleCalculator._gcd = function(a, b) {
@@ -94,7 +98,7 @@ BundleCalculator.filter = function(combo) {
 };
 
 BundleCalculator.ratioToDollar = function(ratio, total) {
-    return Math.round(100 * parseFloat(this.targetAmountElement.val()) * ratio / total) / 100;
+    return Math.round(100 * this.targetAmountVal * ratio / total) / 100;
 };
 
 BundleCalculator.renderResults = function(combos) {
@@ -113,7 +117,7 @@ BundleCalculator.renderResults = function(combos) {
         var total = combo[0] + combo[1] + combo[2];
 	var price1 = this.ratioToDollar(combo[0], total);
 	var price2 = this.ratioToDollar(combo[1], total);
-	var price3 = Math.round(100 * (parseFloat(this.targetAmountElement.val()) - price1 - price2)) / 100;
+	var price3 = Math.round(100 * (this.targetAmountVal - price1 - price2)) / 100;
         resultsDiv.append(" \
             <tr>\
                 <td>\
@@ -131,13 +135,26 @@ BundleCalculator.renderResults = function(combos) {
 };
 
 BundleCalculator.getGoldenRatio = function() {
-    var target = this.targetAmountElement.val();
+    var target = this.targetAmountVal;
     var phi = 1.6180339887498948482;
 
-    var p1 = target / phi;
+    var p1 = target / this.phi;
     var balance = target - p1;
-    var p2 = balance / phi;
+    var p2 = balance / this.phi;
     var p3 = balance - p2;
+
+    var result = {};
+    var comboKey = p1 + "," + p2 + "," + p3;
+    result[comboKey] = [p1, p2, p3];
+    return result;
+};
+
+BundleCalculator.getGoldenRatioV2 = function() {
+    var target = this.targetAmountVal;
+
+    var p1 = this.phi * this.phi;
+    var p2 = this.phi;
+    var p3 = 1;
 
     var result = {};
     var comboKey = p1 + "," + p2 + "," + p3;
@@ -147,12 +164,12 @@ BundleCalculator.getGoldenRatio = function() {
 
 BundleCalculator.bindChanges = function () {
     this.targetAmountElement.on('keyup change', function () {
-        console.log("target changed");
+        this.updateVals();
         this.renderResults(this.getAllCombos());
     }.bind(this));
 
     this.unitPrecisionElement.on('keyup change', function () {
-        console.log("unit changed");
+        this.updateVals();
         this.renderResults(this.getAllCombos());
     }.bind(this));
 
@@ -165,20 +182,29 @@ BundleCalculator.bindChanges = function () {
         if (clicked_button == "golden_ratio") {
             combos = this.getGoldenRatio();
         }
+        else if (clicked_button == "golden_ratio_v2") {
+            combos = this.getGoldenRatioV2();
+        }
         if (combos) {
             this.renderResults(combos);
         }
-    }.bind(this))
+    }.bind(this));
+
+    $('#generate-combos').click(function() {
+        this.renderResults(this.getAllCombos());
+    }.bind(this));
+};
+
+BundleCalculator.updateVals = function() {
+    this.targetAmountVal = parseFloat(this.targetAmountElement.val());
+    this.unitPrecisionVal = parseFloat(this.unitPrecisionElement.val());
 };
 
 BundleCalculator.init = function() {
     this.targetAmountElement = $('#target-amount');
     this.unitPrecisionElement = $('#unit-precision');
+    this.updateVals();
     this.getUnitCount();
     this.bindChanges();
     this.renderResults(this.getAllCombos());
 };
-
-$(function() {
-    BundleCalculator.init();
-});

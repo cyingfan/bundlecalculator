@@ -1,7 +1,12 @@
 # Changelog
 
+## Version 1.3 (November 24 2016)
+Add new variation of golden ratio quick result.
+Move controller initiation into app.js.
+Add "Generate Combinations" button to ease switching between quick results and combinations.
+
 ## Version 1.2.1 (November 23 2016)
-Fix rounding issue
+Fix rounding issue.
 
 ## Version 1.2 (November 23 2016)
 Refactor result columns to be simply portion 1-3, to let users decide what they mean in Humble Bundle.

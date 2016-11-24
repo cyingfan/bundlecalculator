@@ -48,3 +48,9 @@
 
 @include motion-ui-transitions;
 @include motion-ui-animations;
+
+
+.combo-input-columns {
+  vertical-align: middle;
+  line-height: 100px;
+}
