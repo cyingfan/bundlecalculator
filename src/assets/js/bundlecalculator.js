@@ -82,7 +82,7 @@ BundleCalculator.getAllCombos = function() {
                 }
 
                 entry = [p1, p2, p3].sort();
-                comboKey = entry[0] + "," + entry[1] + "," + entry[2];
+                comboKey = entry.join(",");
                 combos[comboKey] = entry;
             }
             portion_3 = 1;
@@ -136,7 +136,6 @@ BundleCalculator.renderResults = function(combos) {
 
 BundleCalculator.getGoldenRatio = function() {
     var target = this.targetAmountVal;
-    var phi = 1.6180339887498948482;
 
     var p1 = target / this.phi;
     var balance = target - p1;
