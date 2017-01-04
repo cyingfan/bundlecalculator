@@ -161,6 +161,20 @@ BundleCalculator.getGoldenRatioV2 = function() {
     return result;
 };
 
+BundleCalculator.getGoldenRatioV3 = function() {
+    var target = this.targetAmountVal;
+
+    var p3 = target / (2 * this.phi + 1);
+    var p1 = (target - p3) / 2;
+    var p2 = p1;
+    p3 = target - p1 - p2;
+
+    var result = {};
+    var comboKey = p1 + "," + p2 + "," + p3;
+    result[comboKey] = [p1, p2, p3];
+    return result;
+};
+
 BundleCalculator.bindChanges = function () {
     this.targetAmountElement.on('keyup change', function () {
         this.updateVals();
@@ -183,6 +197,9 @@ BundleCalculator.bindChanges = function () {
         }
         else if (clicked_button == "golden_ratio_v2") {
             combos = this.getGoldenRatioV2();
+        }
+        else if (clicked_button == 'golden_ratio_v3') {
+            combos = this.getGoldenRatioV3();
         }
         if (combos) {
             this.renderResults(combos);
