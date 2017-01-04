@@ -54,3 +54,16 @@
   vertical-align: middle;
   line-height: 100px;
 }
+th {
+  width: 33%;
+}
+th:nth-child(1) {
+  width: 34%;
+}
+th:nth-child(2) {
+  width: 33%
+}
+th:nth-child(3) {
+  width: 33%
+}
+
